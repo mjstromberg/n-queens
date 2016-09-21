@@ -16,15 +16,49 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var thisBoard = new Board({n: n});
 
+  for (var i = 0; i < n; i++) {
+    thisBoard.togglePiece(i, i);
+  }
+
+  var solution = thisBoard.rows();
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+
+  var recurseRook = function(levelsLeft, boardRows) {
+    //for every starting on the top row
+    boardRows = boardRows || {n: n};
+    
+    var thisBoard = new Board(boardRows);
+    
+    for (var i = 0; i < n; i++) {
+      thisBoard.togglePiece(levelsLeft, i);
+      //create a board with that starting point
+      if (!thisBoard.hasAnyRookConflictsOn(levelsLeft, i)) {
+        if (levelsLeft === 0) {
+          solutionCount++;
+        } else {
+          recurseRook(levelsLeft - 1, thisBoard.rows());
+        }
+      }
+      
+      thisBoard.togglePiece(levelsLeft, i);
+    }
+    
+  };
+    
+  recurseRook(n - 1);
+  
+   
+    //create a board for each starting point below that
+      //recurse as necessary
+        //if n >= n solution count ++
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;

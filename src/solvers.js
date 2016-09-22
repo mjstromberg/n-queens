@@ -31,12 +31,9 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
 
-  var recurseRook = function(levelsLeft, boardRows) {
+  var thisBoard = new Board({n: n});
+  var recurseRook = function(levelsLeft) {
     //for every starting on the top row
-    boardRows = boardRows || {n: n};
-    
-    var thisBoard = new Board(boardRows);
-    
     for (var i = 0; i < n; i++) {
       thisBoard.togglePiece(levelsLeft, i);
       //create a board with that starting point
@@ -44,7 +41,7 @@ window.countNRooksSolutions = function(n) {
         if (levelsLeft === 0) {
           solutionCount++;
         } else {
-          recurseRook(levelsLeft - 1, thisBoard.rows());
+          recurseRook(levelsLeft - 1);
         }
       }
       

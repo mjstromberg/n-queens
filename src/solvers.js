@@ -81,8 +81,17 @@ window.findNQueensSolution = function(n) {
         //create a board with that starting point
         if (!thisBoard.hasAnyQueenConflictsOn(levelsLeft, i)) {
           if (levelsLeft === 0) {
-            solution = new Board(thisBoard.rows()).rows();
-            console.log(solution[0] === thisBoard.rows()[0]);
+            // Create a unique copy of the board rows to prevent overwriting
+            var copy = thisBoard.rows().reduce(function(result, row) {
+              var array = row.reduce(function(res, num) {
+                res.push(num);
+                return res;
+              }, []);
+              result.push(array);
+              return result;
+            }, []);
+
+            solution = new Board(copy).rows();
             return;
           } else {
             recurseQueen(levelsLeft - 1, thisBoard.rows());
@@ -95,9 +104,7 @@ window.findNQueensSolution = function(n) {
   };
     
   recurseQueen(n - 1);
-  console.log(n);
-  console.log(solution);
-  return n === 0 ? new Board({n: n}).rows() : solution;
+  return n === 0 || n === 2 || n === 3 ? new Board({n: n}).rows() : solution;
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
